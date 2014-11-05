@@ -1,0 +1,49 @@
+<header>
+    <div class="container">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+
+                    <a class="navbar-brand" href="/">Ads viewer</a>
+                </div>
+
+                <div class="collapse navbar-collapse">
+                    <ul id="user-panel" class="nav navbar-nav navbar-right right-buttons">
+
+                        {{#if isAuth}}
+                        <li class="messages"><a class="btn glyphicon glyphicon-envelope" href="/users/profile?action=pm"></a><div>{{messagesCount}}</div></li>
+                        <li><a class="btn" href="/users/profile">Welcome, {{firstname}}</a></li>
+                        <li><a class="btn" href="/users/logout">logout</a></li>
+
+                        {{else}}
+                        <li><a class="btn" href="/users/login">Login</a></li>
+                        <li><a class="btn" href="/users/registration">Registration</a></li>
+                        {{/if}}
+
+                        <!--  <li><a class="btn" href="#">Registration</a></li>-->
+                    </ul>
+                    <form action="/?q" class="navbar-form navbar-right" role="search">
+                        <div class="form-group">
+                            <input type="text" name="q" class="form-control" placeholder="Search ads">
+                        </div>
+                        <button type="submit" class="btn btn-default">Go!</button>
+                    </form>
+
+                </div>
+            </div>
+        </nav>
+
+    </div>
+
+</header>
+<script>
+    var errors = '{{{error.message}}}';
+    var notification = '{{{info}}}';
+    var inputData = '{{{error.fields}}}';
+    var uid='{{{uid}}}';
+</script>
+<div class="alert alert-dismissible ">
+
+
+</div>

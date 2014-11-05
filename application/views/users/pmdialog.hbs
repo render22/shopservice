@@ -1,0 +1,22 @@
+<table class="table table-bordered">
+    {{#each messages}}
+    <tr>
+        <td>
+            <p>{{firstname}} ( <small>{{formatDate time}}</small>):</p>
+            <p>{{message}}</p>
+
+        </td>
+    </tr>
+    {{/each}}
+
+</table>
+<div class="modal-body">
+    <form>
+        <input type="hidden" id="receiver" value="{{receiver}}">
+        <textarea style="width: 569px; height: 139px;" id="msg"></textarea>
+    </form>
+</div>
+<div class="modal-footer">
+
+    <button type="button" class="btn btn-primary send">Send</button>
+</div>

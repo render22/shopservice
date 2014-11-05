@@ -1,0 +1,8 @@
+<table class="table table-bordered">
+    {{#each messages}}
+    <tr>
+        <td><span style="color:red">{{unread}} unread messages</span>  <a href="/users/pmdialog/{{dialogid}}">{{firstname}} <small>{{formatDate time}}</small></a></td>
+    </tr>
+    {{/each}}
+
+</table>

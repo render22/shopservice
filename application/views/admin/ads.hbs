@@ -1,0 +1,133 @@
+<table class="table admin table-bordered">
+    {{#each ads}}
+    <tr>
+        <td><a id="{{attributes.id}}" class="control-ads" href="/ad/{{attributes.id}}">{{attributes.name}}</a> <i>Viwes: {{attributes.views}}</i> <a href="#" data="{{attributes.id}}"
+                                                                                                          class="removeAd-admin">Remove</a></td>
+    </tr>
+    {{/each}}
+
+</table>
+<button class="btn btn-block create-ad">Create ad</button>
+
+<div class="modal fade admin-ads" id="message" tabindex="-1" role="dialog" aria-labelledby="message" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit advertisement</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" name="id" />
+                    <div class="control-group">
+                        <label class="control-label" for="textinput">Name</label>
+                        <div class="controls">
+                            <input id="textinput" name="name" placeholder="" class="input-xlarge" type="text">
+                        </div>
+                    </div>
+
+                    <!-- Textarea -->
+                    <div class="control-group">
+                        <label class="control-label" for="textarea">Short description</label>
+                        <div class="controls">
+                            <textarea id="textarea" name="shortDescription"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Textarea -->
+                    <div class="control-group">
+                        <label class="control-label" for="textarea">Full description</label>
+                        <div class="controls">
+                            <textarea id="textarea" name="description"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="textinput">Price</label>
+                        <div class="controls">
+                            <input id="textinput" name="price" placeholder="" class="input-xlarge" type="text">
+                        </div>
+                    </div>
+
+                    <!-- File Button -->
+                    <img width="100" height="100" id="photo" src="" />
+                    <div class="control-group">
+
+                        <label class="control-label" for="filebutton">Image</label>
+                        <small>Only jpeg,gif and png allowed, max size 2mb</small>
+                        <div class="controls">
+                            <input id="filebutton" name="photo" class="input-file" type="file">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade admin-create-ads" id="" tabindex="-1" role="dialog" aria-labelledby="message" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Create advertisement</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="control-group">
+                        <label class="control-label" for="textinput">Name</label>
+                        <div class="controls">
+                            <input id="textinput" name="name" placeholder="" class="input-xlarge" type="text">
+                        </div>
+                    </div>
+
+                    <!-- Textarea -->
+                    <div class="control-group">
+                        <label class="control-label" for="textarea">Short description</label>
+                        <div class="controls">
+                            <textarea id="textarea" name="shortDescription"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Textarea -->
+                    <div class="control-group">
+                        <label class="control-label" for="textarea">Full description</label>
+                        <div class="controls">
+                            <textarea id="textarea" name="description"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="textinput">Price</label>
+                        <div class="controls">
+                            <input id="textinput" name="price" placeholder="" class="input-xlarge" type="text">
+                        </div>
+                    </div>
+
+                    <!-- File Button -->
+                    <div class="control-group">
+                        <label class="control-label" for="filebutton">Image</label>
+                        <small>Only jpeg,gif and png allowed, max size 2mb</small>
+                        <div class="controls">
+                            <input id="filebutton" name="photo" class="input-file" type="file">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary create">Create</button>
+            </div>
+
+        </div>
+    </div>
+</div>

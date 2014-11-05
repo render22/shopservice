@@ -1,0 +1,4 @@
+require('./application/application.js');
+
+
+

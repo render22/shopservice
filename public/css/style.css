@@ -1,0 +1,79 @@
+header .right-buttons a:hover{
+    background-color: #b9def0 !important;
+}
+
+#user-panel{
+    margin-left:50px;
+}
+
+.body{
+    box-shadow: 0px 0px 6px 1px rgba(210, 210, 210, 1);
+    margin-bottom:20px;
+    padding:20px;
+    min-height:300px;
+}
+
+#pagination-cont{
+    text-align: center;
+    margin-top: 90px;
+}
+
+#ads-list{
+    margin-top:10px;
+}
+
+#createAd textarea[name="description"]{
+    height: 100px;
+    width: 320px;
+}
+
+#createAd{
+
+}
+
+#createAd textarea[name="shortDescription"]{
+    height: 80px;
+    width: 250px;
+}
+
+#createAd .control-group:last-child{
+    margin-top:10px;
+}
+
+.alert{
+    text-align: center;
+}
+
+.profile-nav{
+    border-right:1px solid gray;
+}
+
+.messages{
+    position:relative;
+
+}
+
+.messages a{
+    font-size:20px;
+}
+
+.messages div{
+    position: absolute;
+    color: rgba(97, 188, 218, 1);
+    top: 5px;
+    left: 25px;
+    font-size: 22px;
+}
+
+.admin-panel{
+    background-color: rgba(235, 228, 243, 1);
+    padding: 20px;
+}
+
+.admin-panel h1{
+
+}
+.admin-panel h1 a{
+    text-decoration: none;
+    color:white
+}

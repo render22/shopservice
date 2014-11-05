@@ -1,0 +1,9 @@
+<table class="table table-bordered">
+    {{#each ads}}
+    <tr>
+        <td><a href="/ad/{{attributes.id}}">{{attributes.name}}</a> <i>Viwes: {{attributes.views}}</i> <a href="#" id="{{attributes.id}}"
+                                                                                       class="removeAd">Remove</a></td>
+    </tr>
+    {{/each}}
+
+</table>

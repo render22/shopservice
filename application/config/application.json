@@ -1,0 +1,77 @@
+{
+    "server": {
+        "port": 3000
+    },
+
+    "pagination":{
+        "perPage": 3
+    },
+
+    "routes": {
+        "all": {
+
+            "index": [
+                "index",
+                "createad",
+                "/ad/:id",
+                "/removead/:id"
+            ],
+
+            "users": [
+                "profile",
+                "registration",
+                "payment",
+                "paymentdone",
+                "paymentcancel",
+                "login",
+                "logout",
+                "pm",
+                "/pmdialog/:dialogId"
+            ],
+
+            "admin": [
+                "index",
+                "login",
+                "users",
+                "stats",
+                "ads",
+                "/removeuser/:id",
+                "/removead/:id"
+            ]
+        }
+    },
+
+    "credentials": {
+        "cookieSecret": "3Gdk8j54KUT21",
+        "db": {
+            "pg": {
+                "connectionLink": "postgres://postgres:root@localhost:5432/Ads"
+            }
+        },
+        "paypal": {
+            "api": {
+                "mode": "sandbox",
+                "client_id": "AWQ2hRAdeiTt1jZ7RuJb13hHl4ISvOcAMlGUzCKMl32Tsnq6Y6ztAUb3z1Jq",
+                "client_secret": "EIPMexDQis3RqJBUi-U1vxDmutcTGBMwBbCp9SJSoRQyfDwz4rt5jZspypDC"
+            },
+            "urls": {
+                "return_url": "http://localhost:3000/users/paymentdone",
+                "cancel_url": "http://localhost:3000/users/paymentcancel"
+            }
+
+
+        }
+    },
+
+    "user":{
+        "accountCreationCost":10.00,
+        "accountCreationCostCurrency":"USD",
+        "description":"Ads account creation"
+    },
+
+    "files": {
+        "uploadDir": "public/uploads"
+    }
+
+
+}

@@ -1,0 +1,55 @@
+<form id="createAd" class="form-horizontal" method="post" enctype="multipart/form-data" >
+    <fieldset>
+
+        <legend>Create Advertisement</legend>
+
+
+        <div class="control-group">
+            <label class="control-label" for="textinput">Name</label>
+            <div class="controls">
+                <input id="textinput" name="name" placeholder="" class="input-xlarge" type="text">
+             </div>
+        </div>
+
+        <!-- Textarea -->
+        <div class="control-group">
+            <label class="control-label" for="textarea">Short description</label>
+            <div class="controls">
+                <textarea id="textarea" name="shortDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Textarea -->
+        <div class="control-group">
+            <label class="control-label" for="textarea">Full description</label>
+            <div class="controls">
+                <textarea id="textarea" name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="textinput">Price</label>
+            <div class="controls">
+                <input id="textinput" name="price" placeholder="" class="input-xlarge" type="text">
+            </div>
+        </div>
+
+        <!-- File Button -->
+        <div class="control-group">
+            <label class="control-label" for="filebutton">Image</label>
+            <small>Only jpeg,gif and png allowed, max size 2mb</small>
+            <div class="controls">
+                <input id="filebutton" name="photo" class="input-file" type="file">
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="control-group">
+
+            <div class="controls">
+                <button id="singlebutton"  class="btn btn-primary">Create Ad</button>
+            </div>
+        </div>
+
+    </fieldset>
+</form>

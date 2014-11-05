@@ -1,0 +1,33 @@
+<div id="welcome-content" class="text-center">
+    <h3>Welcome to advertisements viewer! Here you can post and view ads</h3>
+    <a href="/createad" class="btn btn-lg btn-info">Create your ad</a>
+</div>
+<div id="ads-list">
+    <div class="row">
+        {{#each ads}}
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+                <a href="/ad/{{id}}"><img src="/uploads/{{photo}}"></a>
+                <div class="caption">
+                    <small>{{formatDate postedDate}}</small>
+                    <h3><a href="/ad/{{id}}">{{name}}</a></h3>
+                    <p>{{shortDescription}}</p>
+                    <p>{{price}} $</p>
+
+                    <p><strong>Posted by: {{firstname}} </strong></p>
+
+
+                    <p><a href="#" data="{{userId}}" class="contactUser btn btn-primary" role="button">Contact user</a> </p>
+
+                </div>
+            </div>
+        </div>
+        <h1></h1>
+        {{/each}}
+
+
+    </div>
+</div>
+<div id="pagination-cont">
+   {{> pagination}}
+</div>

@@ -1,0 +1,22 @@
+<div class="text-center">
+    <div class="thumbnail">
+        <a href="/ad/{{id}}"><img src="/uploads/{{ad.photo}}"></a>
+
+        <div class="caption">
+            <small>{{formatDate ad.postedDate}}</small>
+            <h3><a href="/ad/{{id}}">{{ad.name}}</a></h3>
+
+            <p>{{ad.shortDescription}}</p>
+
+            <p>{{ad.description}}</p>
+
+            <p>{{ad.price}} $</p>
+
+            <p><strong>Posted by: {{ad.firstname}} </strong></p>
+
+
+            <p><a href="#" data="{{ad.userId}}" class="contactUser btn btn-primary" role="button">Contact user</a></p>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+{
+    "domain": "localhost:3000",
+    "schema": "http",
+    "api": {
+
+        "ads": {
+            "url": "/api/ads",
+            "requestType": "get",
+            "condition": "data.status === 'ok' && data.data.length > 0",
+            "error": "Should return ok status and data"
+
+        },
+
+        "createad": {
+            "url": "/api/createad",
+            "requestType": "put",
+            "condition": "data.status === 'ok' && data.data.length > 0",
+            "error": "Should return ok status and data",
+            "options": {
+                "body": {"name": "test", "shortDescription": "test", "description": "test test", "price": "66"}
+            }
+
+        },
+
+        "removead": {
+            "url": "/api/removead/:createad",
+            "requestType": "del",
+            "condition": "data.status === 'ok'",
+            "error": "Should return ok"
+
+        },
+
+        "createuser": {
+            "url": "/api/createuser",
+            "requestType": "put",
+            "condition": "data.status === 'ok' && data.data.length > 0",
+            "error": "Should return ok status and data",
+            "options": {
+                "body": {
+                    "firstname": "test",
+                    "lastname": "test",
+                    "email": "test@gmail.com",
+                    "password": "qwerty",
+                    "password_repeat": "qwerty"
+                }
+            }
+
+        },
+
+
+        "payment":{
+            "url": "/api/payment/:createuser",
+            "requestType": "get",
+            "condition": "data.status === 'ok' && data.data.paymentRedirectLink.length > 0",
+            "error": "Should return ok status and payment Redirect Link"
+        },
+        "login": {
+            "url": "/api/login",
+            "requestType": "post",
+            "condition": "data.status === 'ok' && data.data.sessionId.length > 0",
+            "error": "Should return ok status and sessionId",
+            "options": {
+                "body": {"email": "test@gmail.com", "password": "qwerty"}
+            }
+
+        },
+        "removeuser": {
+            "url": "/api/removeuser/:createuser",
+            "requestType": "del",
+            "condition": "data.status === 'ok'",
+            "error": "Should return ok"
+        }
+
+
+
+
+    }
+}

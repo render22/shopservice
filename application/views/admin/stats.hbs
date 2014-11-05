@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<script>
+    $(function() {
+        $( ".datepicker" ).datepicker();
+    });
+</script>
+<form>
+<p>From: <input type="text" class="datepicker" value="{{datefrom}}" name="datefrom"> - To: <input type="text" value="{{dateto}}" class="datepicker" name="dateto"></p>
+<div>
+    <button>Submit</button><button onClick="$('form')[0].reset();return false;">Reset</button>
+</div>
+</form>
+        <div>
+
+        </div>
+        </hr>
+<p>Created ads count: <span class="label label-primary">{{data.adscount}}</span></p>
+<p>Registered users count : <span class="label label-primary">{{data.users}}</span></p>
+        <p>Payments:</p>
+<table class="table table-bordered">
+    {{#each payment}}
+    <tr>
+        <td ></td>
+    </tr>
+    {{/each}}
+
+</table>
