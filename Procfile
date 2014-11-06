@@ -1,1 +1,1 @@
-web: NODE_APP_LOCATION='remote' NODE_ENV='' node index.js
+web: NODE_APP_LOCATION='remote' NODE_ENV='development' node index.js
