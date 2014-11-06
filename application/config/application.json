@@ -3,7 +3,7 @@
         "port": 3000
     },
 
-    "pagination":{
+    "pagination": {
         "perPage": 3
     },
 
@@ -45,13 +45,12 @@
         "cookieSecret": "3Gdk8j54KUT21",
         "db": {
             "pg": {
-                "local":{
+                "local": {
                     "connectionLink": "postgres://postgres:root@localhost:5432/Ads"
                 },
-                "remote":{
-                     "connectionLink": "postgres://fiiaggrxcnmxgg:OAw3xgvIJYAjfmTkZtjMzcGhEh@ec2-54-83-201-54.compute-1.amazonaws.com/dc1l32h3rqfhe7"
+                "remote": {
+                    "connectionLink": "postgres://fiiaggrxcnmxgg:OAw3xgvIJYAjfmTkZtjMzcGhEh@ec2-54-83-201-54.compute-1.amazonaws.com/dc1l32h3rqfhe7"
                 }
-
 
 
             }
@@ -63,18 +62,25 @@
                 "client_secret": "EIPMexDQis3RqJBUi-U1vxDmutcTGBMwBbCp9SJSoRQyfDwz4rt5jZspypDC"
             },
             "urls": {
-                "return_url": "http://localhost:3000/users/paymentdone",
-                "cancel_url": "http://localhost:3000/users/paymentcancel"
+                "remote": {
+                    "return_url": "https://quiet-castle-5484.herokuapp.com/users/paymentdone",
+                    "cancel_url": "https://quiet-castle-5484.herokuapp.com/users/paymentcancel"
+                },
+                "local": {
+                    "return_url": "http://localhost:3000/users/paymentdone",
+                    "cancel_url": "http://localhost:3000/users/paymentcancel"
+                }
+
             }
 
 
         }
     },
 
-    "user":{
-        "accountCreationCost":10.00,
-        "accountCreationCostCurrency":"USD",
-        "description":"Ads account creation"
+    "user": {
+        "accountCreationCost": 10.00,
+        "accountCreationCostCurrency": "USD",
+        "description": "Ads account creation"
     },
 
     "files": {

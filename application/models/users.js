@@ -122,7 +122,7 @@ module.exports = function (bookshelf, properties) {
             "payer": {
                 "payment_method": "paypal"
             },
-            "redirect_urls": config.credentials.paypal.urls,
+            "redirect_urls": (process.env.NODE_APP_LOCATION === 'local') ? config.credentials.paypal.urls.local : config.credentials.paypal.urls.remote,
             "transactions": [{
                 "item_list": {
                     "items": [{
@@ -194,30 +194,25 @@ module.exports = function (bookshelf, properties) {
      * Getting count of registered users
      */
         Users.prototype.getStat = function (startDate, endDate, config) {
-            var defer= q.defer();
-            var listPayment = {
-
-            };
+            var defer = q.defer();
+            var listPayment = {};
             var query = bookshelf.knex('users')
                 .count();
             if (startDate) {
                 var parts = startDate.split('/');
                 var newDate = parts[2] + '-' + parts[0] + '-' + parts[1];
-                listPayment.start_time=newDate+'T00:00:00Z';
+                listPayment.start_time = newDate + 'T00:00:00Z';
                 startDate = newDate.replace('-0', '-');
                 query.where(bookshelf.knex.raw('"regDate" >= \'' + startDate + '\'::date'));
             }
 
-            if (endDate){
+            if (endDate) {
                 var parts = endDate.split('/');
                 var newDate = parts[2] + '-' + parts[0] + '-' + parts[1];
-                listPayment.end_time=newDate+'T00:00:00Z';
+                listPayment.end_time = newDate + 'T00:00:00Z';
                 endDate = newDate.replace('-0', '-');
                 query.where(bookshelf.knex.raw('"regDate" <= \'' + endDate + '\'::date'));
             }
-
-
-
 
 
             paypal.configure(config.credentials.paypal.api);
@@ -227,7 +222,7 @@ module.exports = function (bookshelf, properties) {
                     defer.reject(error);
 
                 } else {
-                    defer.resolve([query,payments]);
+                    defer.resolve([query, payments]);
 
                 }
             });
