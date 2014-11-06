@@ -27,7 +27,7 @@ module.exports = function (bookshelf, properties) {
 
                     var pages = Math.floor(cnt[0].count / limit);
 
-                    (cnt[0].count - (limit * cnt[0].count) !== 0) ? ++pages : pages;
+                    (cnt[0].count - (limit * pages) !== 0) ? ++pages : pages;
 
                     data.pagesCount = pages;
                     cb(data);
@@ -53,10 +53,9 @@ module.exports = function (bookshelf, properties) {
             .offset(page * limit)
             .limit(limit)
             .orderBy('postedDate', 'desc');
-        if (params) {
-
+        if (params)
             select.where(params);
-        }
+
         var self = this;
         select.then(function (data) {
             return data;

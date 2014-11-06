@@ -29,7 +29,7 @@ module.exports = {
         } else {
             Ad(this.bookshelf).fetchAds(function (data) {
                     var pages = {};
-                   // console.log(data.pagesCount);
+
                     for (var i = 0; i < data.pagesCount; i++) {
                         var p = i;
                         pages[i] = {
