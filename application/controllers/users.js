@@ -80,21 +80,21 @@ module.exports = {
                             defer.resolve();
                         }).catch(function (err) {
                             flashGenerator.setAppError(req.session);
-                            defer.resolve();
+                            defer.reject();
                         });
                     }, function (validationErrors) {
                         flashGenerator.setErrors(req.session, validationErrors, fields);
-                        defer.resolve();
+                        defer.reject();
                     }).catch(function (e) {
                         console.log(e);
                     });
 
 
-                defer.promise.then(function (err) {
-                    if (err)
-                        res.redirect(303, '/users/registration');
-                    else
-                        res.redirect(303, '/users/payment');
+                defer.promise.then(function () {
+
+                    return res.redirect(303, '/users/payment');
+                }, function (error) {
+                    return res.redirect(303, '/users/registration');
                 });
 
             });
@@ -110,13 +110,18 @@ module.exports = {
     paymentAction: function (req, res) {
 
         if (!req.session.userId)
-            res.redirect(303, '/users/registration');
+            return res.redirect(303, '/users/registration');
         if (req.query.confirm === 'true') {
+
             Users(this.bookshelf)
                 .pay(this.config, req.session)
-                .then(function (paymentRedirectLink) {
-                    res.redirect(303, paymentRedirectLink);
+                .then(function (result) {
+                    res.redirect(303, result[0]);
                 }, function (error) {
+                    console.log(error);
+                    flashGenerator.setAppError(req.session);
+                    res.render('users/payment');
+                }).catch(function(error){
                     console.log(error);
                     flashGenerator.setAppError(req.session);
                     res.render('users/payment');
@@ -130,13 +135,14 @@ module.exports = {
     paymentdoneAction: function (req, res) {
 
         var paymentId = req.query.paymentId;
+        var payerId=req.query.PayerID;
         if (req.session.paymentId !== paymentId) {
-            console.log(req.session.paymentId, paymentId);
+            console.log(payerId);
             flashGenerator.setAppError(req.session);
             return res.redirect(303, '/users/paymentcancel');
         }
         Users(this.bookshelf)
-            .confirmPayment(this.config, paymentId, req.session)
+            .confirmPayment(this.config, paymentId,payerId, req.session)
             .then(function () {
                 flashGenerator.setMessage(req.session,
                     "Congratulations! Now you able to create your advertisement", "info");

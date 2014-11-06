@@ -29,11 +29,12 @@ module.exports = {
         } else {
             Ad(this.bookshelf).fetchAds(function (data) {
                     var pages = {};
-                    for (var i = 1; i <= data.pagesCount; i++) {
-
+                   // console.log(data.pagesCount);
+                    for (var i = 0; i < data.pagesCount; i++) {
+                        var p = i;
                         pages[i] = {
-                            page: i,
-                            comparePage: [i, curPage]
+                            page: (p+1),
+                            comparePage: [(p+1), curPage]
                         }
                     }
 
@@ -60,7 +61,6 @@ module.exports = {
     adAction: function (req, res) {
 
         Ad(this.bookshelf).fetchAds(function (data) {
-
             res.render('ad', {ad: data[0]});
         }, {"ads.id": parseInt(req.params.id)});
 
@@ -69,7 +69,7 @@ module.exports = {
 
 
     createadAction: function (req, res) {
-        var self=this;
+        var self = this;
         if (req.method === 'POST') {
             var form = new formidable.IncomingForm();
 
@@ -79,7 +79,6 @@ module.exports = {
                     flashGenerator.setAppError(req.session);
                     res.redirect(303, '/');
                 }
-
                 fields.userId = req.session.user.id;
 
                 if (files.photo.size) {
@@ -118,6 +117,7 @@ module.exports = {
                         });
 
                     }, function (errors) {
+
                         flashGenerator.setErrors(req.session, errors, fields);
                         res.redirect(303, '/createad');
                     });

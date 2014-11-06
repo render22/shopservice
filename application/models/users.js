@@ -20,9 +20,9 @@ module.exports = function (bookshelf, properties) {
         }
     });
 
-    Users.prototype.testMode=false;
-    Users.prototype.setTestMode=function(){
-        this.testMode=true;
+    Users.prototype.testMode = false;
+    Users.prototype.setTestMode = function () {
+        this.testMode = true;
         return this;
     }
 
@@ -36,18 +36,18 @@ module.exports = function (bookshelf, properties) {
         var defer = q.defer();
 
         var self = this;
-        var condition={
+        var condition = {
             email: this.attributes['email'],
             role: (role) ? role : "customer"
         };
 
-        if(!this.testMode)
-            condition.active=1;
+        if (!this.testMode)
+            condition.active = 1;
 
 
         bookshelf.knex.select('*').from('users').where(
             condition
-            ).then(function (result) {
+        ).then(function (result) {
 
                 if (!result.length)
                     defer.reject(false);
@@ -77,27 +77,35 @@ module.exports = function (bookshelf, properties) {
     Users.prototype.changeCred = function (session) {
         var defer = q.defer();
         session.user.email = this.attributes['email'];
+        var errors = 0;
         if (this.attributes['old_password'] && this.attributes['old_password'].length) {
-
-            if (!this.attributes['new_password'].length)
+            if (!this.attributes['new_password'].length) {
                 defer.reject({new_password: 'field should not be empty'});
+                ++errors;
+            }
 
-
-            if (!bcrypt.compareSync(this.attributes['old_password'], session.user.password))
+            if (!bcrypt.compareSync(this.attributes['old_password'], session.user.password)) {
                 defer.reject({old_password: 'wrong password'});
+                ++errors;
+            }
 
+            if (!errors) {
+                this.set({"password": bcrypt.hashSync(this.attributes['new_password'])});
+                session.user.password = bcrypt.hashSync(this.attributes['new_password']);
+            }
 
-            this.set({"password": bcrypt.hashSync(this.attributes['new_password'])});
-            session.user.password = bcrypt.hashSync(this.attributes['new_password']);
 
         }
 
+
         delete this.attributes['old_password'];
         delete this.attributes['new_password'];
+        if (!errors) {
+            this.save().then(function () {
+                defer.resolve();
+            });
+        }
 
-        this.save().then(function () {
-            defer.resolve();
-        });
 
         return defer.promise;
 
@@ -110,7 +118,7 @@ module.exports = function (bookshelf, properties) {
         var defer = q.defer();
         paypal.configure(config.credentials.paypal.api);
         var payment = {
-            "intent": "authorize",
+            "intent": "sale",
             "payer": {
                 "payment_method": "paypal"
             },
@@ -131,7 +139,7 @@ module.exports = function (bookshelf, properties) {
                 "description": config.user.description
             }]
         };
-        var self=this;
+        var self = this;
 
         paypal.payment.create(payment, function (error, payment) {
             if (error) {
@@ -150,116 +158,81 @@ module.exports = function (bookshelf, properties) {
     },
 
 
-
     /**
      * Getting response from paypal sandbox, checking payment status
      * and updating users db record with active status if payment correct
      */
-    Users.prototype.confirmPayment = function (config, paymentId, session) {
+        Users.prototype.confirmPayment = function (config, paymentId, payerId, session) {
 
-        var defer = q.defer();
-        paypal.configure(config.credentials.paypal.api);
-        var self = this;
-        paypal.payment.get(paymentId, function (error, payment) {
-            delete session.paymentId;
-
-            if (error) {
-                defer.reject(error);
-            } else {
-                if (payment.state != 'created') {
+            var defer = q.defer();
+            paypal.configure(config.credentials.paypal.api);
+            var self = this;
+            paypal.payment.execute(paymentId, {"payer_id": payerId}, function (error, payment) {
+                if (error) {
+                    console.log(error.response);
                     defer.reject(error);
+                } else {
+
+                    delete session.paymentId;
+                    self.set({"id": session.userId})
+                        .save({"active": 1}, {patch: true})
+                        .then(function () {
+                            defer.resolve();
+                        }).catch(function (error) {
+                            defer.reject(error);
+                        });
+                    delete session.userId;
+
                 }
-
-                self.set({"id": session.userId})
-                    .save({"active": 1}, {patch: true})
-                    .then(function () {
-                        defer.resolve();
-                    }).catch(function (error) {
-                        defer.reject(error);
-                    });
+            });
 
 
-                delete session.userId;
-            }
-        });
-
-        return defer.promise;
-    },
+            return defer.promise;
+        },
 
     /**
      * Getting count of registered users
      */
         Users.prototype.getStat = function (startDate, endDate, config) {
+            var defer= q.defer();
+            var listPayment = {
 
+            };
             var query = bookshelf.knex('users')
                 .count();
             if (startDate) {
                 var parts = startDate.split('/');
                 var newDate = parts[2] + '-' + parts[0] + '-' + parts[1];
-
+                listPayment.start_time=newDate+'T00:00:00Z';
                 startDate = newDate.replace('-0', '-');
                 query.where(bookshelf.knex.raw('"regDate" >= \'' + startDate + '\'::date'));
             }
 
-
-            if (endDate) {
-
+            if (endDate){
+                var parts = endDate.split('/');
+                var newDate = parts[2] + '-' + parts[0] + '-' + parts[1];
+                listPayment.end_time=newDate+'T00:00:00Z';
+                endDate = newDate.replace('-0', '-');
                 query.where(bookshelf.knex.raw('"regDate" <= \'' + endDate + '\'::date'));
             }
 
-            var listPayment = {
-                'count': '1',
-                'start_index': '1'
-            };
-
-            /*paypal.generateToken(config.credentials.paypal.api,function(err,token){
-
-             console.log(token);
-             var https = require('https');
-             var options = {
-             host: 'api.sandbox.paypal.com',
-             path: '/v1/payments/payment',
-             headers:{
-             'Authorization': token,
-             'Content-type':'application/json'
-             }
-             };
-
-             var req = https.get(options, function(res) {
-             console.log('STATUS: ' + res.statusCode);
-             console.log(req.headers);
-             console.log('HEADERS: ' + JSON.stringify(res.headers));
 
 
-             // Buffer the body entirely for processing as a whole.
-             var bodyChunks = [];
-             res.on('data', function(chunk) {
-             // You can process streamed parts here...
-             bodyChunks.push(chunk);
-             }).on('end', function() {
-             var body = Buffer.concat(bodyChunks);
-             console.log('BODY: ' + body);
-             // ...and/or process the entire body here.
-             })
-             });
 
-             req.on('error', function(e) {
-             console.log('ERROR: ' + e.message);
-             });
-             });
 
-             */
+            paypal.configure(config.credentials.paypal.api);
 
-            /*paypal.payment.list(listPayment, function (error, payment) {
-             if (error) {
-             throw error;
-             } else {
-             console.log("List Payments Response");
-             console.log(payment);
-             }
-             });*/
+            paypal.payment.list(listPayment, function (error, payments) {
+                if (error) {
+                    defer.reject(error);
 
-            return query;
+                } else {
+                    defer.resolve([query,payments]);
+
+                }
+            });
+
+            return defer.promise;
         }
 
     /**
@@ -312,10 +285,6 @@ module.exports = function (bookshelf, properties) {
             if (isRegistration) {
                 delete this.attributes['password_repeat'];
                 this.attributes['password'] = bcrypt.hashSync(this.attributes['password']);
-            }
-
-
-            if (isRegistration) {
                 var self = this;
                 bookshelf.knex.select('id').from('users').where({
                     email: self.attributes['email']

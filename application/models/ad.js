@@ -59,10 +59,19 @@ module.exports = function (bookshelf, properties) {
         }
         var self = this;
         select.then(function (data) {
-
             return data;
         }).then(function (data) {
             self.countAds(data, limit, cb);
+            return data;
+        }).then(function (data) {
+            if (params) {
+                bookshelf.knex('ads').where({
+                    id: data[0].id
+                }).update({
+                    views: ++data[0].views
+                }).then();
+            }
+
         });
     }
 
@@ -92,7 +101,7 @@ module.exports = function (bookshelf, properties) {
      * @returns {*}
      */
     Ads.prototype.getStat = function (startDate, endDate) {
-        console.log(startDate);
+
         var query = bookshelf.knex('ads')
             .count();
         if (startDate) {

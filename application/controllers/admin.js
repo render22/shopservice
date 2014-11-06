@@ -23,7 +23,7 @@ module.exports = {
     },
 
     loginAction: function (req, res) {
-        var self=this;
+        var self = this;
         if (req.method === 'POST') {
             var form = new formidable.IncomingForm();
             form.parse(req, function (err, fields, files) {
@@ -36,12 +36,12 @@ module.exports = {
                 Users(self.bookshelf, fields)
                     .validateData()
                     .then(function (model) {
-                        model.auth(req.session,'admin')
+                        model.auth(req.session, 'admin')
                             .then(function () {
                                 res.redirect(303, '/admin');
                             }, function () {
                                 flashGenerator.setMessage(req.session, "login or password incorrect", "danger");
-                                return  res.redirect(303, '/admin/login');
+                                return res.redirect(303, '/admin/login');
                             })
 
 
@@ -51,7 +51,6 @@ module.exports = {
                     }).catch(function (e) {
                         console.log(e);
                     });
-
 
 
             });
@@ -325,43 +324,61 @@ module.exports = {
     statsAction: function (req, res) {
         var defer1 = q.defer();
         var defer2 = q.defer();
-        var stats={};
-        var self=this;
+        var stats = {};
+        var self = this;
+
         Users(this.bookshelf).getStat(
             req.query.datefrom,
             req.query.dateto,
             self.config
-        )
-            .then(function (data) {
-                stats.users= data[0].count;
-                defer1.resolve(stats);
-            }).catch(function (err) {
-                console.log(err);
-                defer1.reject(err);
+        ).then(function (data) {
+                data[0].then(function(result){
+                    stats.users = result[0].count;
+                    stats.payments= data[1].payments;
+                    defer1.resolve(stats);
+                },function(error){
+                    flashGenerator.setAppError(req.session, error);
+                    defer1.reject(error);
+                });
+
+            }, function (error) {
+                flashGenerator.setAppError(req.session, error);
+                defer1.reject(error);
+            }).catch(function (error) {
+                console.log(error);
+                defer1.reject(error);
             });
+
         Ads(this.bookshelf)
             .getStat(
             req.query.datefrom,
             req.query.dateto
-        )
-            .then(function (data) {
-                stats.adscount= data[0].count;
+        ).then(function (data) {
+                stats.adscount = data[0].count;
                 defer2.resolve(stats);
             }).catch(function (err) {
                 console.log(err);
                 defer2.reject(err);
             });
 
-        q.all([defer1.promise,defer2.promise]).then(function (data) {
-            console.log(data);
+        q.all([defer1.promise, defer2.promise]).then(function (data) {
+
             res.render('admin/stats',
                 {
-                    datefrom:req.query.datefrom,
-                    dateto:req.query.dateto,
+                    datefrom: req.query.datefrom,
+                    dateto: req.query.dateto,
                     data: data[0],
                     layout: "admin"
                 });
-        },function(error){
+        }, function (error) {
+            console.log(error);
+            flashGenerator.setAppError(req.session, err);
+            res.render('admin/stats',
+                {
+                    layout: "admin"
+                });
+        }).catch(function (error) {
+            console.log(error.stack);
             flashGenerator.setAppError(req.session, err);
             res.render('admin/stats',
                 {

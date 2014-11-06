@@ -63,11 +63,14 @@ module.exports = function (req, res, next) {
         if (~notAuthorizedRequired.indexOf(path))
             return res.redirect(303, '/');
 
-        if (~AdminNotAuthorizedRequired.indexOf(path))
+        if (~AdminNotAuthorizedRequired.indexOf(path) && req.session.user.role === 'admin')
             return res.redirect(303, '/admin');
 
-        if (~path.indexOf('admin') && req.session.user.role !== 'admin' && !~AdminNotAuthorizedRequired.indexOf(path))
+        if (~path.indexOf('admin') && req.session.user.role !== 'admin' && !~AdminNotAuthorizedRequired.indexOf(path)){
+
             return res.redirect(303, '/admin/login');
+        }
+
     }
 
 

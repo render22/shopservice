@@ -8,7 +8,7 @@
 <form>
 <p>From: <input type="text" class="datepicker" value="{{datefrom}}" name="datefrom"> - To: <input type="text" value="{{dateto}}" class="datepicker" name="dateto"></p>
 <div>
-    <button>Submit</button><button onClick="$('form')[0].reset();return false;">Reset</button>
+    <button>Submit</button><button onClick="$('form input').val('');return false;">Reset</button>
 </div>
 </form>
         <div>
@@ -19,9 +19,16 @@
 <p>Registered users count : <span class="label label-primary">{{data.users}}</span></p>
         <p>Payments:</p>
 <table class="table table-bordered">
-    {{#each payment}}
+    {{#each data.payments}}
     <tr>
-        <td ></td>
+     <td>
+         <p><i>Id:</i> {{id}}</p>
+         <p><i>Create time:</i> {{formatDate create_time}}</p>
+         <p><i>Update time:</i> {{formatDate create_time}}</p>
+         <p><i>Amount:</i> {{transactions.0.amount.total}} {{transactions.0.amount.currency}}</p>
+         <p><i>Description:</i> {{transactions.0.description}}</p>
+         <p><i>State:</i> {{state}}</p>
+     </td>
     </tr>
     {{/each}}
 

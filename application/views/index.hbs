@@ -7,7 +7,9 @@
         {{#each ads}}
         <div class="col-sm-6 col-md-4">
             <div class="thumbnail">
+                {{#if photo}}
                 <a href="/ad/{{id}}"><img src="/uploads/{{photo}}"></a>
+                {{/if}}
                 <div class="caption">
                     <small>{{formatDate postedDate}}</small>
                     <h3><a href="/ad/{{id}}">{{name}}</a></h3>

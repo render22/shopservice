@@ -1,7 +1,8 @@
 <div class="text-center">
     <div class="thumbnail">
+        {{#if ad.photo}}
         <a href="/ad/{{id}}"><img src="/uploads/{{ad.photo}}"></a>
-
+        {{/if}}
         <div class="caption">
             <small>{{formatDate ad.postedDate}}</small>
             <h3><a href="/ad/{{id}}">{{ad.name}}</a></h3>

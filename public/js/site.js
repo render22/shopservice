@@ -1,11 +1,12 @@
 $(document).ready(function () {
     if (uid) {
-
         $('.contactUser[data="'+uid+'"]').remove();
+    }else{
+        $('.contactUser').remove();
     }
     $('.removeAd').click(function (e) {
         if (confirm('Are you sure?')) {
-            window.location = '/admin/removeuser/' + $(this).attr('id');
+            window.location = '/removead/' + $(this).attr('id');
         }
 
         e.preventDefault();

@@ -115,6 +115,7 @@ function initMiddlewares(app) {
         response.locals.messagesCount = 0;
         if (request.session.user) {
             response.locals.isAuth = true;
+            response.locals.isAdmin = request.session.user.role === 'admin' ? true : false;
             response.locals.firstname = request.session.user.firstname;
             response.locals.uid = request.session.user.id;
 
