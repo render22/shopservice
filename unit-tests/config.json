@@ -4,7 +4,7 @@
         "schema": "http"
     },
 
-    "romote": {
+    "remote": {
         "domain": "quiet-castle-5484.herokuapp.com",
         "schema": "https"
     },
