@@ -45,7 +45,15 @@
         "cookieSecret": "3Gdk8j54KUT21",
         "db": {
             "pg": {
-                "connectionLink": "postgres://fiiaggrxcnmxgg:OAw3xgvIJYAjfmTkZtjMzcGhEh@ec2-54-83-201-54.compute-1.amazonaws.com/dc1l32h3rqfhe7"
+                "local":{
+                    "connectionLink": "postgres://postgres:root@localhost:5432/Ads"
+                },
+                "remote":{
+                     "connectionLink": "postgres://fiiaggrxcnmxgg:OAw3xgvIJYAjfmTkZtjMzcGhEh@ec2-54-83-201-54.compute-1.amazonaws.com/dc1l32h3rqfhe7"
+                }
+
+
+
             }
         },
         "paypal": {

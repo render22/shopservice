@@ -13,7 +13,11 @@ suite('Test', function () {
                         headers: {'Content-type': 'application/json'},
                         timeout: 5000
                     };
-                    var url = unitConfig.schema + '://' + unitConfig.domain + unitConfig.api[name]['url'];
+
+                    var schema = (process.env.NODE_APP_LOCATION === 'local') ? unitConfig.local.schema : unitConfig.remote.schema;
+                    var domain = (process.env.NODE_APP_LOCATION === 'local') ? unitConfig.local.domain : unitConfig.remote.domain;
+
+                    var url = schema + '://' + domain + unitConfig.api[name]['url'];
                     url.split('/').slice(3).forEach(function (part) {
                         if (~part.indexOf(':'))
                             url = url.replace(part, lastInsertedId[part]);
@@ -36,7 +40,8 @@ suite('Test', function () {
                             assert(eval(unitConfig.api[name]['condition']), unitConfig.api[name]['error']);
                             done();
                         }).on('error', function () {
-                            console.log('request failed');
+                            assert(false,'request failed');
+
                             done();
                         })
                 });

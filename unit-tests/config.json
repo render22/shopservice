@@ -1,6 +1,14 @@
 {
-    "domain": "localhost:3000",
-    "schema": "http",
+    "local": {
+        "domain": "localhost:3000",
+        "schema": "http"
+    },
+
+    "romote": {
+        "domain": "quiet-castle-5484.herokuapp.com",
+        "schema": "https"
+    },
+
     "api": {
 
         "ads": {
@@ -48,7 +56,7 @@
         },
 
 
-        "payment":{
+        "payment": {
             "url": "/api/payment/:createuser",
             "requestType": "get",
             "condition": "data.status === 'ok' && data.data.paymentRedirectLink.length > 0",
@@ -70,8 +78,6 @@
             "condition": "data.status === 'ok'",
             "error": "Should return ok"
         }
-
-
 
 
     }

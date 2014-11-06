@@ -17,7 +17,7 @@ engine.set('config', config);
 engine.set('winston', winston);
 engine.set('port', process.env.PORT || config.server.port || 3000);
 
-var api=require(applicationPath+'/api');
+var api = require(applicationPath + '/api');
 
 function Start() {
 
@@ -50,11 +50,15 @@ try {
 }
 
 
-
 function initDb(app) {
+    var dbConf = app.get('config').credentials.db.pg;
+
     var pg = require('knex')({
         client: 'pg',
-        connection: app.get('config').credentials.db.pg.connectionLink,
+        connection: (process.env.NODE_APP_LOCATION === 'local') ?
+            dbConf.local.connectionLink
+            :
+            dbConf.remote.connectionLink
         //  debug:true
     });
 
@@ -71,11 +75,15 @@ function initMiddlewares(app) {
     //app.use('/users/paymentdone', require('body-parser')());
     app.use(require('cookie-parser')(config.credentials.cookieSecret));
     var pgSession = require('connect-pg-simple')(session);
+    var dbConf = app.get('config').credentials.db.pg;
     var pg = require('pg');
     app.use(session({
         store: new pgSession({
             pg: pg,
-            conString: app.get('config').credentials.db.pg.connectionLink
+            conString: (process.env.NODE_APP_LOCATION === 'local') ?
+                dbConf.local.connectionLink
+                :
+                dbConf.remote.connectionLink
         }),
         secret: config.credentials.cookieSecret,
         cookie: {maxAge: 30 * 24 * 60 * 60 * 1000} // 30 days
