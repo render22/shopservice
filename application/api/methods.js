@@ -50,7 +50,7 @@ module.exports = {
         Users(self.bookshelf, req.body).validateData(true)
             .then(function (model) {
                 model.save().then(function (data) {
-
+                    model.set({active:1}).save();
                     res.json({
                         status: "ok",
                         data: data
@@ -99,49 +99,7 @@ module.exports = {
         });
     },
 
-    /**
-     * Authorization with given email and password
-     * @param req
-     * @param res
-     */
-    login: function (req, res) {
-        var self = this;
-        Users(self.bookshelf, req.body)
-            .validateData()
-            .then(function (model) {
-                model.setTestMode().auth(req.session)
-                    .then(function () {
-                        res.json({
-                            status: "ok",
-                            data: {
-                                sessionId: req.sessionID
-                            }
-                        });
-                    }, function () {
-                        console.log(1);
-                        res.json({
-                            status: "error",
-                            "message": "login or password incorrect"
-                        });
 
-                    })
-
-
-            }, function (validationErrors) {
-                res.json({
-                    status: "error",
-                    "message": validationErrors
-                });
-            }).catch(function (e) {
-                console.log(e);
-                res.json({
-                    status: "error",
-                    "message": e
-                });
-            });
-
-
-    },
 
     /**
      * Creating payment on paypal sandbox for activation user accout

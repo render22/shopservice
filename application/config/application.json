@@ -42,6 +42,7 @@
     },
 
     "credentials": {
+        "tokenLife": 3600,
         "cookieSecret": "3Gdk8j54KUT21",
         "db": {
             "pg": {
