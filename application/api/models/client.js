@@ -3,5 +3,7 @@ module.exports = function (bookshelf, properties) {
         tableName: 'client'
     });
 
+
+
     return new Client(properties);
 }

@@ -128,10 +128,12 @@ module.exports = function (bookshelf, properties) {
     Ads.prototype.validateData = function () {
         var errors = {};
         var defer = q.defer();
-        if (!Object.keys(this.attributes).length) {
+        var inputKeys=Object.keys(this.attributes);
+        if (inputKeys.length<5) {
 
-            defer.reject('No data provided');
+            defer.reject('No correct data provided. Please check your data:'+JSON.stringify(this.attributes));
         } else {
+
             for (var prop in this.attributes) {
                 if (prop !== 'photo' && this.attributes[prop].length === 0) {
                     errors[prop] = 'field should not be empty';
@@ -139,6 +141,7 @@ module.exports = function (bookshelf, properties) {
 
                 } else if (prop === 'price') {
                     var price = parseFloat(this.attributes[prop]);
+
                     if (!isNaN(price) && price > 0)
                         this.attributes[prop] = price;
                     else

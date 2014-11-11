@@ -1,6 +1,6 @@
-module.exports = function (bookshelf, properties) {
-    var RefreshToken=bookshelf.Model.extend({
-        tableName: 'refreshToken'
+module.exports = function (bookshelf, properties, type) {
+    var RefreshToken = bookshelf.Model.extend({
+        tableName: type === 'client' ? 'clientRefreshToken' : 'refreshToken'
     });
 
     return new RefreshToken(properties);

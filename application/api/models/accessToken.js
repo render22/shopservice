@@ -1,7 +1,8 @@
-module.exports = function (bookshelf, properties) {
-    var AccessToken=bookshelf.Model.extend({
-        tableName: 'accessToken'
+module.exports = function (bookshelf, properties, type) {
+    var AccessToken = bookshelf.Model.extend({
+        tableName: type === 'client' ? 'clientAccessToken' : 'accessToken'
     });
+
 
     return new AccessToken(properties);
 }

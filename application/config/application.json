@@ -42,7 +42,7 @@
     },
 
     "credentials": {
-        "tokenLife": 3600,
+        "tokenLife": 30600,
         "cookieSecret": "3Gdk8j54KUT21",
         "db": {
             "pg": {
@@ -86,6 +86,12 @@
 
     "files": {
         "uploadDir": "public/uploads"
+    },
+
+    "api":{
+
+        "private":["removead","createad","pmdialogs"],
+        "privateAdmin":["createuser","removeuser"]
     }
 
 
