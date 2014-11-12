@@ -19,6 +19,10 @@ engine.set('port', process.env.PORT || config.server.port || 3000);
 
 var api = require(applicationPath + '/api');
 
+/**
+ * Initializing application core
+ * @constructor
+ */
 function Start() {
 
     initDb(engine);
@@ -50,6 +54,10 @@ try {
 }
 
 
+/**
+ * Initializing postgres database, getting and passing to global app property bookshelf ORM instance
+ * @param app
+ */
 function initDb(app) {
     var dbConf = app.get('config').credentials.db.pg;
 
@@ -70,6 +78,10 @@ function initDb(app) {
 
 }
 
+/**
+ * Initializing common middlewares
+ * @param app
+ */
 function initMiddlewares(app) {
     app.use(express.static(app.get('projectRoot') + '/public'));
     //app.use('/users/paymentdone', require('body-parser')());
@@ -143,6 +155,10 @@ function initMiddlewares(app) {
 
 }
 
+/**
+ * Initializing handlebars view engine
+ * @param app
+ */
 function initView(app) {
     app.set('views', app.get('appPath') + '/views');
     app.set('layouts', app.get('appPath') + '/views');
@@ -165,6 +181,10 @@ function initView(app) {
 
 }
 
+/**
+ * Initializing routes for error handling
+ * @param engine
+ */
 function initErrorRoutes(engine) {
     engine.use(function (req, res, next) {
 

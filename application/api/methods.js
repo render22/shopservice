@@ -9,19 +9,21 @@ var url = require('url');
 
 /**
  * Api methods
- *
  * @type {{
  * init: Function,
  * createuser: Function,
- * login: Function,
+ * removeuser: Function,
  * payment: Function,
  * paymentdone: Function,
- * pmmessages: Function,
+ * pmsend: Function,
+ * pmdialogs: Function,
  * edituserinfo: Function,
  * getuserads: Function,
  * ads: Function,
+ * searchad: Function,
  * removead: Function,
- * createad: Function
+ * createad: Function,
+ * editad: Function
  * }}
  */
 module.exports = {
@@ -107,7 +109,7 @@ module.exports = {
      */
     payment: function (req, res) {
 
-        if (isNaN(parseInt(req.user.id))) {
+        if (isNaN(parseInt(req.user.id)) && isNaN(parseInt(req.params.userId))) {
 
             return res.json({
                 status: "error",
@@ -181,14 +183,59 @@ module.exports = {
     },
 
     /**
+     * Sending personal message
+     * @param req
+     * @param res
+     */
+
+    pmsend: function (req, res) {
+        var msgHash;
+        if (req.body.msgHash) {
+            msgHash = req.body.msgHash;
+        } else {
+            msgHash = crypto.createHash('md5').
+                update("" + (new Date()).getTime() + Math.random()).
+                digest("hex");
+        }
+
+
+        Pm(this.bookshelf, {
+            senderId: req.user.id,
+            receiverId: (req.body.receiver) ? req.body.receiver : req.params.receiver,
+            message: req.body.message,
+            dialogid: msgHash
+
+        }).validateData().then(function (model) {
+            model.save().then(function () {
+                res.json({status: "ok"});
+            }).catch(function (error) {
+
+                res.json({status: "error", errors: error});
+            });
+        }, function (errors) {
+            res.json({
+                status: "error",
+                message: errors
+            });
+        }).catch(function (error) {
+            res.json({
+                status: "error",
+                message: error
+            });
+        });
+
+
+    },
+
+    /**
      * User dialogs list or messages by dialog id
      * @param req
      * @param res
      */
     pmdialogs: function (req, res) {
-     
-        var self=this;
-        if(req.params.dialogId){
+
+        var self = this;
+        if (req.params.dialogId) {
             this.bookshelf.knex.select('*')
                 .from('messages')
                 .leftJoin('users', 'messages.senderId', 'users.id')
@@ -226,7 +273,7 @@ module.exports = {
                         data: data
                     });
                 });
-        }else{
+        } else {
             var s = this.bookshelf.knex.select(this.bookshelf.knex.raw('DISTINCT ON("dialogid") "dialogid"'), 'time', 'firstname')
                 .from('messages')
                 .leftJoin('users', 'messages.senderId', 'users.id')
@@ -288,37 +335,63 @@ module.exports = {
     },
 
 
-
     /**
      * Changing user email and password
      * @param req
      * @param res
      */
     edituserinfo: function (req, res) {
-
+        var self = this;
+        if (req.user.attributes.role === 'customer')
+            req.body.id = req.user.id;
         Users(self.bookshelf, req.body)
             .validateData()
             .then(function (model) {
-                model.changeCred(req.session)
-                    .then(function () {
-                        res.json({
-                            status: "ok"
-
+                if (req.user.attributes.role === 'admin') {
+                    if (!model.get('id'))
+                        return res.json({
+                            status: 'error',
+                            message: 'User id must be set'
                         });
-                    }, function (errors) {
-                        res.json({
-                            status: "error",
-                            "message": errors
+                    model.save().then(function () {
+                        return res.json({
+                            status: 'ok'
+                        });
+                    }).catch(function (error) {
+                        console.log(error);
+                        return res.json({
+                            status: 'error',
+                            message: error.message
                         });
                     });
+                } else {
+
+                    req.session.user = req.user.attributes;
+
+                    model.changeCred(req.session)
+                        .then(function () {
+                            res.json({
+                                status: "ok"
+
+                            });
+                        }, function (errors) {
+
+                            res.json({
+                                status: "error",
+                                message: errors.message
+                            });
+                        });
+                }
+
             }, function (errors) {
+
                 res.json({
                     status: "error",
                     "message": errors
                 });
             })
             .catch(function (error) {
-                console.log(error.message, error.stack);
+
                 res.json({
                     status: "error",
                     "message": error
@@ -334,11 +407,18 @@ module.exports = {
      * @param res
      */
     getuserads: function (req, res) {
+
+        var userId = (req.user.attributes.role === 'customer') ? req.user.id : req.params.id;
+        if (!userId)
+            return res.json({
+                status: 'error',
+                message: 'User id must be set'
+            });
         Ad(this.bookshelf)
-            .where({userId: req.body.userId})
+            .where({userId: userId})
             .fetchAll()
             .then(function (data) {
-                page.ads = data.toArray();
+
                 res.json({
                     status: "ok",
                     data: data.toArray()
@@ -359,15 +439,7 @@ module.exports = {
 
         var curPage = (req.body.page) ? req.body.page : 1;
 
-        if (req.body.q) {
-            Ad(this.bookshelf).search(function (data) {
-                res.json({
-                    status: "ok",
-                    data: data
-
-                });
-            }, req.body.q);
-        } else if (req.params.id) {
+        if (req.params.id) {
             Ad(this.bookshelf).fetchAds(function (data) {
 
                 res.json({
@@ -397,6 +469,21 @@ module.exports = {
         }
 
 
+    },
+
+    /**
+     * Searching ads by keyword
+     * @param req
+     * @param res
+     */
+    searchad: function (req, res) {
+        Ad(this.bookshelf).search(function (data) {
+            res.json({
+                status: "ok",
+                data: data
+
+            });
+        }, req.body.query)
     },
 
     /**
@@ -468,6 +555,46 @@ module.exports = {
                 });
             });
 
+    },
+
+
+    /**
+     * Editing user advertisements
+     * @param req
+     * @param res
+     * @returns {*}
+     */
+    editad: function (req, res) {
+        var self = this;
+        if (!req.params.adId)
+            return res.json({
+                status: 'error',
+                message: 'Advertisement id must be set'
+            });
+
+        req.body.id = req.params.adId;
+        Ad(self.bookshelf, req.body).validateData()
+            .then(function (model) {
+                model.save().then(function (data) {
+                    res.json({
+                        status: "ok",
+                        data: data
+                    });
+                }).catch(function (err) {
+                    console.log(err);
+                    res.json({
+                        status: "error",
+                        "message": err
+                    });
+                });
+
+            }, function (errors) {
+
+                res.json({
+                    status: "error",
+                    "message": errors
+                });
+            });
     }
 
 

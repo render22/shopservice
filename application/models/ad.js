@@ -167,10 +167,7 @@ module.exports = function (bookshelf, properties) {
     }
 
     var AdsObj = new Ads(properties);
-    AdsObj.on('saving', function (model, attrs, options) {
 
-
-    });
 
     return AdsObj
 

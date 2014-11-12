@@ -6,7 +6,26 @@ var ValidationErrors = require('../models/exceptions/validation.js').ValidationE
 var q = require('q');
 var fs = require('fs');
 
+/**
+ * Admin area controller
+ * @type {{
+ * init: Function,
+ * indexAction: Function,
+ * loginAction: Function,
+ * removeuserAction: Function,
+ * removeadAction: Function,
+ * adsAction: Function,
+ * _reseivePhoto: Function,
+ * usersAction: Function,
+ * statsAction: Function
+ * }}
+ */
 module.exports = {
+
+    /**
+     * Initializing on router startup
+     * @param app
+     */
     init: function (app) {
         this.app = app;
         this.bookshelf = app.get('bookshelf');

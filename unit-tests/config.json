@@ -10,13 +10,19 @@
     },
 
     "api": {
-        "clientauth":{
-            "url": "/api/gettoken",
+        "check protection": {
+            "url": "/api/ads",
+            "requestType": "get",
+            "condition": "data==='Unauthorized'",
+            "error": "Should return unauthorized state"
+        },
+        "clientauth": {
+            "url": "/api/getclienttoken",
             "requestType": "post",
             "condition": "data.access_token.length > 0",
             "error": "Should return access token",
             "options": {
-                "body": {"email": "test@gmail.com", "password": "qwerty"}
+                "body": {"grant_type": "client_credentials", "client_id": "mobile1", "client_secret": "secret1234"}
             }
         },
 
@@ -28,29 +34,10 @@
 
         },
 
-        "createad": {
-            "url": "/api/createad",
-            "requestType": "put",
-            "condition": "data.status === 'ok' && data.data.length > 0",
-            "error": "Should return ok status and data",
-            "options": {
-                "body": {"name": "test", "shortDescription": "test", "description": "test test", "price": "66"}
-            }
-
-        },
-
-        "removead": {
-            "url": "/api/removead/:createad",
-            "requestType": "del",
-            "condition": "data.status === 'ok'",
-            "error": "Should return ok"
-
-        },
-
         "createuser": {
             "url": "/api/createuser",
             "requestType": "put",
-            "condition": "data.status === 'ok' && data.data.length > 0",
+            "condition": "data.status === 'ok' && Object.keys(data.data).length > 0",
             "error": "Should return ok status and data",
             "options": {
                 "body": {
@@ -64,29 +51,149 @@
 
         },
 
-
         "payment": {
             "url": "/api/payment/:createuser",
             "requestType": "get",
             "condition": "data.status === 'ok' && data.data.paymentRedirectLink.length > 0",
             "error": "Should return ok status and payment Redirect Link"
         },
-        "login": {
-            "url": "/api/login",
-            "requestType": "post",
-            "condition": "data.status === 'ok' && data.data.sessionId.length > 0",
-            "error": "Should return ok status and sessionId",
+
+        "Check user scope protection": {
+            "url": "/api/createad",
+            "requestType": "put",
+            "condition": "data==='Unauthorized'",
+            "error": "Should return unauthorized state",
             "options": {
-                "body": {"email": "test@gmail.com", "password": "qwerty"}
+                "body": {"name": "test", "shortDescription": "test", "description": "test test", "price": "66"}
             }
 
         },
-        "removeuser": {
-            "url": "/api/removeuser/:createuser",
+
+        "userauth": {
+            "url": "/api/getusertoken",
+            "requestType": "post",
+            "condition": "data.access_token.length > 0",
+            "error": "Should return access token",
+            "options": {
+                "body": {
+                    "grant_type": "password",
+                    "client_id": "mobile1",
+                    "client_secret": "secret1234",
+                    "username": "test@gmail.com",
+                    "password": "qwerty"
+                }
+            }
+        },
+
+
+        "createad": {
+            "url": "/api/createad",
+            "requestType": "put",
+            "condition": "data.status === 'ok' && data.data.length > 0",
+            "error": "Should return ok status and data",
+            "options": {
+                "body": {"name": "test", "shortDescription": "test", "description": "test test", "price": "66"}
+            }
+
+        },
+
+        "Get user ads": {
+            "url": "/api/getuserads",
+            "requestType": "get",
+            "condition": "data.status === 'ok' && data.data.length > 0",
+            "error": "Should return ok status and data"
+
+        },
+
+        "searchad": {
+            "url": "/api/searchad",
+            "requestType": "post",
+            "condition": "data.status === 'ok' && data.data.length > 0",
+            "error": "Should return ok status and data",
+            "options": {
+                "body": {"query": "test"}
+            }
+
+        },
+
+        "removead": {
+            "url": "/api/removead/:createad",
             "requestType": "del",
             "condition": "data.status === 'ok'",
             "error": "Should return ok"
+
+        },
+
+        "pmdialogs": {
+            "url": "/api/pmdialogs",
+            "requestType": "get",
+            "condition": "data.status === 'ok'",
+            "error": "Should return ok status"
+        },
+
+        "Edit user info": {
+            "url": "/api/edituserinfo",
+            "requestType": "post",
+            "condition": "data.status === 'ok'",
+            "error": "Should return ok status",
+            "options": {
+                "body": {
+                    "email": "test1@gmail.com",
+                    "old_password": "qwerty",
+                    "new_password": "qwerty777"
+                }
+            }
+
+        },
+
+        "Send pm": {
+            "url": "/api/pmsend/:createuser",
+            "requestType": "post",
+            "condition": "data.status === 'ok'",
+            "error": "Should return ok status",
+            "options": {
+                "body": {
+                    "message": "please buy me"
+                }
+            }
+
+        },
+
+        "Check admin scope protection": {
+            "url": "/api/removeuser",
+            "requestType": "del",
+            "condition": "data==='Unauthorized'",
+            "error": "Should return unauthorized state"
+
+        },
+
+        "Admin auth": {
+            "url": "/api/getusertoken",
+            "requestType": "post",
+            "condition": "data.access_token.length > 0",
+            "error": "Should return access token",
+            "options": {
+                "body": {
+                    "grant_type": "password",
+                    "client_id": "mobile1",
+                    "client_secret": "secret1234",
+                    "username": "admin@admin.com",
+                    "password": "qwerty"
+                }
+            }
+        },
+
+
+
+        "Remove user": {
+            "url": "/api/removeuser/:createuser",
+            "requestType": "del",
+            "condition": "data.status === 'ok'",
+            "error": "Should return ok status"
+
         }
+
+
 
 
     }

@@ -6,7 +6,22 @@ var flashGenerator = require('../../library/flashGenerator.js');
 var fs = require('fs');
 
 
+/**
+ * Public area Controller
+ * @type {{
+ * init: Function,
+ * indexAction: Function,
+ * removeadAction: Function,
+ * adAction: Function,
+ * createadAction: Function
+ * }}
+ */
 module.exports = {
+
+    /**
+     * Initializing on router startup
+     * @param app
+     */
     init: function (app) {
         this.app = app;
         this.bookshelf = app.get('bookshelf');

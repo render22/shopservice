@@ -76,8 +76,11 @@ module.exports = function (bookshelf, properties) {
      */
     Users.prototype.changeCred = function (session) {
         var defer = q.defer();
+
         session.user.email = this.attributes['email'];
         var errors = 0;
+
+
         if (this.attributes['old_password'] && this.attributes['old_password'].length) {
             if (!this.attributes['new_password'].length) {
                 defer.reject({new_password: 'field should not be empty'});
@@ -91,6 +94,7 @@ module.exports = function (bookshelf, properties) {
 
             if (!errors) {
                 this.set({"password": bcrypt.hashSync(this.attributes['new_password'])});
+
                 session.user.password = bcrypt.hashSync(this.attributes['new_password']);
             }
 
@@ -100,9 +104,13 @@ module.exports = function (bookshelf, properties) {
 
         delete this.attributes['old_password'];
         delete this.attributes['new_password'];
+
         if (!errors) {
             this.save().then(function () {
+
                 defer.resolve();
+            }, function (error) {
+                defer.reject(error);
             });
         }
 
@@ -303,10 +311,7 @@ module.exports = function (bookshelf, properties) {
 
 
     var UsersObj = new Users(properties);
-    UsersObj.on('saving', function (model, attrs, options) {
 
-
-    });
 
     return UsersObj
 

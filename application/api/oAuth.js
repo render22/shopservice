@@ -10,6 +10,16 @@ var RefreshToken = require('./models/refreshToken.js');
 var bcrypt = require('bcrypt-nodejs');
 var crypto = require('crypto');
 
+/**
+ * oAuth methods which implementing client-password, user password, bearer authentications
+ * @type {{
+ * init: Function,
+ * authenticateBearer: Function,
+ * _initOAuthServer: Function,
+ * getUserToken: Function,
+ * getClientToken: Function
+ * }}
+ */
 module.exports = {
     /**
      * Initializing then router startup
@@ -21,30 +31,36 @@ module.exports = {
         this.winston = app.get('winston');
         this.config = app.get('config');
         var self = this;
+       //Initialize oAuth server
         this._initOAuthServer();
-        passport.use(new BasicStrategy(
-            function (username, password, done) {
 
-                Client(self.bookshelf, {clientId: username}).fetch()
+        //BasicStrategy authentication which means authentication with client id and client password
+        passport.use(new BasicStrategy(
+            function (clientId, clientSecret, done) {
+               //Here we are accessing database using client model for checking client id and client password for successful authorization
+                Client(self.bookshelf, {clientId: clientId}).fetch()
                     .then(function (client) {
+
                         if (!client) {
                             return done(null, false);
                         }
-                        if (client.attributes.clientSecret != password) {
+                        if (client.attributes.clientSecret != clientSecret) {
                             return done(null, false);
                         }
 
                         return done(null, client);
                     }).catch(function (error) {
                         console.log(error);
+                        done(error);
                     });
 
             }
         ));
 
+        //ClientPasswordStrategy authentication which means authentication with client id and client password
         passport.use(new ClientPasswordStrategy(
             function (clientId, clientSecret, done) {
-
+                //Here we are accessing database using client model for checking client id and client password for successful authorization
                 Client(self.bookshelf, {clientId: clientId}).fetch()
                     .then(function (client) {
 
@@ -70,13 +86,21 @@ module.exports = {
 
     },
 
+
+    /**
+     * Returning wrapper for BearerStrategy authentication for divided one according user or client and in case user authentication
+     * we also passing role to determine whether it is customer or administrator
+     * @param type
+     * @param role
+     * @returns {Function}
+     */
     authenticateBearer: function (type, role) {
         var self = this;
         return function (req, res, next) {
-
+            //BearerStrategy authentication which means authentication with bearer token (unique base64 encoded string)
             passport.use(new BearerStrategy(
                 function (accessToken, done) {
-
+                   //Here we are accessing appropriate table passing type param and using AccessToken model for checking provided token exists
                     AccessToken(self.bookshelf, {token: accessToken}, type).fetch()
                         .then(function (token) {
                             if (!token) {
@@ -84,6 +108,7 @@ module.exports = {
                             }
                             var tokenCrTimestamp = (new Date(token.attributes.created)).getTime();
 
+                            //Token expiration check
                             if (Math.round((Date.now() - tokenCrTimestamp) / 1000) > self.config.credentials.tokenLife) {
                                 AccessToken(self.bookshelf, null, type)
                                     .where({token: accessToken})
@@ -440,6 +465,7 @@ module.exports = {
         this.server = server;
     },
 
+    //Authenticating user using above strategies and returning access token
     getUserToken: function () {
         return [
             this.passport.authenticate(['basic', 'oauth2-client-password'], {session: false}),
@@ -449,6 +475,7 @@ module.exports = {
 
     },
 
+    //Authenticating client using above strategies and returning access token
     getClientToken: function () {
         return [
             this.passport.authenticate(['oauth2-client-password'], {session: false}),

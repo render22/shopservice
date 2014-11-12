@@ -42,7 +42,7 @@
     },
 
     "credentials": {
-        "tokenLife": 30600,
+        "tokenLife": 3600,
         "cookieSecret": "3Gdk8j54KUT21",
         "db": {
             "pg": {
@@ -90,8 +90,8 @@
 
     "api":{
 
-        "private":["removead","createad","pmdialogs"],
-        "privateAdmin":["createuser","removeuser"]
+        "private":["removead","createad","pmdialogs","edituserinfo","getuserads","pmsend"],
+        "privateAdmin":["removeuser","editad"]
     }
 
 

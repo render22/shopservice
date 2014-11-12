@@ -7,7 +7,28 @@ var Ad = require('../models/ad.js');
 var crypto = require('crypto');
 var url = require('url');
 
+
+/**
+ * Users area controller
+ * @type {{
+ * init: Function,
+ * logoutAction: Function,
+ * loginAction: Function,
+ * registrationAction: Function,
+ * paymentcancelAction: Function,
+ * paymentAction: Function,
+ * paymentdoneAction: Function,
+ * profileAction: Function,
+ * pmdialogAction: Function,
+ * pmAction: Function
+ * }}
+ */
 module.exports = {
+
+    /**
+     * Initializing on router startup
+     * @param app
+     */
     init: function (app) {
         this.app = app;
         this.bookshelf = app.get('bookshelf');
@@ -121,7 +142,7 @@ module.exports = {
                     console.log(error);
                     flashGenerator.setAppError(req.session);
                     res.render('users/payment');
-                }).catch(function(error){
+                }).catch(function (error) {
                     console.log(error);
                     flashGenerator.setAppError(req.session);
                     res.render('users/payment');
@@ -135,14 +156,14 @@ module.exports = {
     paymentdoneAction: function (req, res) {
 
         var paymentId = req.query.paymentId;
-        var payerId=req.query.PayerID;
+        var payerId = req.query.PayerID;
         if (req.session.paymentId !== paymentId) {
             console.log(payerId);
             flashGenerator.setAppError(req.session);
             return res.redirect(303, '/users/paymentcancel');
         }
         Users(this.bookshelf)
-            .confirmPayment(this.config, paymentId,payerId, req.session)
+            .confirmPayment(this.config, paymentId, payerId, req.session)
             .then(function () {
                 flashGenerator.setMessage(req.session,
                     "Congratulations! Now you able to create your advertisement", "info");
@@ -357,11 +378,23 @@ module.exports = {
                     message: fields.message,
                     dialogid: msgHash
 
-                }).save().then(function () {
-                    res.json({status: "ok"});
-                }).catch(function (err) {
+                }).validateData().then(function (model) {
+                    model.save().then(function () {
+                        res.json({status: "ok"});
+                    }).catch(function (error) {
 
-                    res.json({status: "error", errors: err.error});
+                        res.json({status: "error", errors: error});
+                    });
+                }, function (errors) {
+                    res.json({
+                        status: "error",
+                        message: errors
+                    });
+                }).catch(function (error) {
+                    res.json({
+                        status: "error",
+                        message: error
+                    });
                 });
 
 

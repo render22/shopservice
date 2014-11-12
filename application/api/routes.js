@@ -1,5 +1,10 @@
 var methods = require('./methods.js');
 var oAuth = require('./oAuth');
+
+/**
+ * Api application routes initialization with authentication
+ * @param app
+ */
 module.exports = function (app) {
     /*
      Initialize api controller on router startup
@@ -40,7 +45,15 @@ module.exports = function (app) {
         methods.ads.apply(methods, arguments);
     });
 
+    app.put('/api/createuser', function (req, res) {
+        methods.createuser.apply(methods, arguments);
+    });
+
     app.get('/api/payment/:userId', function (req, res) {
+        methods.payment.apply(methods, arguments);
+    });
+
+    app.get('/api/payment', function (req, res) {
         methods.payment.apply(methods, arguments);
     });
 
@@ -48,10 +61,10 @@ module.exports = function (app) {
         methods.paymentdone.apply(methods, arguments);
     });
 
-    app.post('/api/login', function (req, res) {
-        methods.login.apply(methods, arguments);
-    });
 
+    app.post('/api/searchad', function (req, res) {
+        methods.searchad.apply(methods, arguments);
+    });
 
     /*Private*/
 
@@ -61,7 +74,7 @@ module.exports = function (app) {
     });
 
 
-    app.delete('/api/removead/:dialogId', function (req, res) {
+    app.delete('/api/removead/:id', function (req, res) {
         methods.removead.apply(methods, arguments);
     });
 
@@ -73,19 +86,43 @@ module.exports = function (app) {
         methods.pmdialogs.apply(methods, arguments);
     });
 
+    app.post('/api/edituserinfo', function (req, res) {
+        methods.edituserinfo.apply(methods, arguments);
+    });
 
+    app.post('/api/pmsend', function (req, res) {
+        methods.pmsend.apply(methods, arguments);
+    });
+
+    app.post('/api/pmsend/:receiver', function (req, res) {
+        methods.pmsend.apply(methods, arguments);
+    });
+
+    app.get('/api/getuserads', function(req, res){
+        methods.getuserads.apply(methods, arguments);
+    });
 
     /* Admin */
-    app.put('/api/createuser', function (req, res) {
-        methods.createuser.apply(methods, arguments);
-    });
+
 
 
     app.delete('/api/removeuser/:id', function (req, res) {
         methods.removeuser.apply(methods, arguments);
     });
 
+    app.post('/api/edituserinfo/:userId', function (req, res) {
+        methods.edituserinfo.apply(methods, arguments);
+    });
 
+    app.post('/api/editad/:adId', function (req, res) {
+        methods.editad.apply(methods, arguments);
+    });
+
+    app.get('/api/getuserads/:id', function(req, res){
+        methods.getuserads.apply(methods, arguments);
+    });
+
+    /*Error handling*/
     app.use('/api/*', function (err, req, res, next) {
 
         console.error(err.stack);

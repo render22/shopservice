@@ -1,3 +1,10 @@
+/**
+ * This methods use in handlebars view-helper module
+ * @type {{
+ * formatDate: Function,
+  * isCurrentPage: Function
+  * }}
+ */
 module.exports = {
     formatDate: function (inputDate) {
         var date = new Date(inputDate);
