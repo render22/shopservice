@@ -29,4 +29,4 @@ terminal.on('exit', function (code) {
 
 terminal.stdin.write('grunt unittests\n');
 
-terminal.stdin.end();
+terminal.stdin.end(2);
