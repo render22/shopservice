@@ -13,7 +13,7 @@
         "check protection": {
             "url": "/api/ads",
             "requestType": "get",
-            "condition": "data==='nauthorized'",
+            "condition": "data==='Unauthorized'",
             "error": "Should return unauthorized state"
         },
         "clientauth": {
