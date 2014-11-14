@@ -51,6 +51,10 @@
                 },
                 "remote": {
                     "connectionLink": "postgres://fiiaggrxcnmxgg:OAw3xgvIJYAjfmTkZtjMzcGhEh@ec2-54-83-201-54.compute-1.amazonaws.com/dc1l32h3rqfhe7"
+                },
+
+                "unit-tests":{
+                    "connectionLink": "postgres://postgres:root@localhost:5432/TestImport"
                 }
 
 

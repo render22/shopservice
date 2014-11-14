@@ -19,6 +19,8 @@ engine.set('port', process.env.PORT || config.server.port || 3000);
 
 var api = require(applicationPath + '/api');
 
+var connectionLink;
+
 /**
  * Initializing application core
  * @constructor
@@ -61,12 +63,15 @@ try {
 function initDb(app) {
     var dbConf = app.get('config').credentials.db.pg;
 
+    if (process.env.NODE_APP_LOCATION === 'local')
+        connectionLink = dbConf.local.connectionLink
+
     var pg = require('knex')({
         client: 'pg',
-        connection: (process.env.NODE_APP_LOCATION === 'local') ?
-            dbConf.local.connectionLink
+        connection: (process.env.NODE_ENV === 'unit-tests') ?
+            dbConf['unit-tests'].connectionLink
             :
-            dbConf.remote.connectionLink
+            dbConf[process.env.NODE_APP_LOCATION].connectionLink
         //  debug:true
     });
 
@@ -91,16 +96,20 @@ function initMiddlewares(app) {
     var pg = require('pg');
     app.use(session({
         store: new pgSession({
-            pg: pg,
-            conString: (process.env.NODE_APP_LOCATION === 'local') ?
-                dbConf.local.connectionLink
-                :
-                dbConf.remote.connectionLink
-        }),
+                pg: pg,
+                conString: (process.env.NODE_ENV === 'unit-tests') ?
+                    dbConf['unit-tests'].connectionLink
+                    :
+                    dbConf[process.env.NODE_APP_LOCATION].connectionLink
+            }
+        ),
         secret: config.credentials.cookieSecret,
-        cookie: {maxAge: 30 * 24 * 60 * 60 * 1000} // 30 days
-    }));
-    // app.use(session());
+        cookie: {
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        } // 30 days
+    }))
+    ;
+// app.use(session());
     app.use(function (request, response, next) {
 
         if (request.session.flash) {
