@@ -16,7 +16,7 @@ terminal.stdout.on('data', function (data) {
 
 terminal.stderr.on('data', function (data) {
     console.log(data.toString());
-    process.exit(3);
+    process.exit(1);
 });
 /*terminal.stderr.on('end', function (data) {
  console.log('childTerminal: ' + data);
@@ -29,4 +29,4 @@ terminal.on('exit', function (code) {
 
 terminal.stdin.write('grunt unittests\n');
 
-terminal.stdin.end(2);
+terminal.stdin.end();
