@@ -16,7 +16,7 @@ terminal.stdout.on('data', function (data) {
 
 terminal.stderr.on('data', function (data) {
     console.log(data.toString());
-    process.exit(2);
+    process.exit(3);
 });
 /*terminal.stderr.on('end', function (data) {
  console.log('childTerminal: ' + data);
